@@ -14,8 +14,8 @@ public class SmartQLearner {
 		double totalReward = 0.0;
         int numberOfGames = 0;
 
-        double learningRate = 0.9;
-        double discountFactor = 0.9;
+        double learningRate = 0.5;
+        double discountFactor = 0.5;
         FileWriter writer = new FileWriter("numbers_smartQLearner.txt");
         while (notDone()) {
         	// Make sure the playOneGame method returns the end-reward of the game
@@ -119,7 +119,7 @@ public class SmartQLearner {
     private static boolean notDone() {
         episodeCounter++;
         System.out.println(episodeCounter);
-        return (episodeCounter <= 15);
+        return (episodeCounter <= 100);
     }
     private static void outputQTable(double [][][] QTable) {
         System.out.println("QTable: ");

@@ -136,6 +136,12 @@ public class BlackJackEnv {
 			Thread.currentThread().interrupt();
 		}
 	}
+
+	public static int dealerFirst(List<String> dealersCards) {
+		// Get the value of the dealer's first card
+		return totalValue(dealersCards);
+	}
+
 	private static boolean visibleState = false;
 	private static BlackJackPanel panel;
 
