@@ -44,7 +44,7 @@ public class BlackJackPanel extends JPanel {
         playerHand = new ArrayList<ImageIcon>();
         for (String card : playerString)
             playerHand.add(getCardIcon(card));
-        this.repaint();
+        repaint();
     }
 
     private ImageIcon getCardIcon(String s) {
@@ -53,8 +53,13 @@ public class BlackJackPanel extends JPanel {
     }
 
     public void paintComponent(Graphics g){
-         g.setColor(Color.white);
-         g.drawString("Dealer:",10,30);
+        super.paintComponent(g); // Always call super.paintComponent(g) first
+
+        // Fill the panel with the background color
+        g.setColor(new Color(0,100,0));
+        g.fillRect(0, 0, getWidth(), getHeight());
+        g.setColor(Color.WHITE);
+        g.drawString("Dealer:",10,30);
          if (gameOver) {
              int x = 15;
              for (ImageIcon i: dealerHand) {
@@ -66,6 +71,8 @@ public class BlackJackPanel extends JPanel {
              cardBack.paintIcon(this, g, 40, 40);
 
          }
+
+
          g.drawString("Value = " + dealerValue, 250, 70);
          g.drawString("Player:", 10, 150);
          int x = 15;
