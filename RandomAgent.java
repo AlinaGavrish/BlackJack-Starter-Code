@@ -3,10 +3,13 @@ import java.util.ArrayList;
 public class RandomAgent {
 
     private static BlackJackEnv game;
+
     private static ArrayList<String> gamestate;
 
     public static void main(String[] args) {
+
         game = new BlackJackEnv(BlackJackEnv.RENDER);
+
         // Playing 5 random games
         for (int i=0; i<5; i++) {
             gamestate = game.reset();

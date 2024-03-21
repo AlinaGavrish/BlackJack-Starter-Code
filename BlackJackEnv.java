@@ -18,6 +18,7 @@ public class BlackJackEnv {
 	private static int vizType = NONE;
 	private static int vizDelay = 300;
 
+
 	public BlackJackEnv() {}
 	public BlackJackEnv(int vizType) {
 		BlackJackEnv.vizType = vizType;
