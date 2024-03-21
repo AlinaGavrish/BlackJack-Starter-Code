@@ -120,7 +120,7 @@ public class SmartQLearner2 {
     private static boolean notDone() {
         episodeCounter++;
         System.out.println(episodeCounter);
-        return (episodeCounter <= 100);
+        return (episodeCounter < 50);
     }
     private static void outputQTable(double [][][][] QTable) {
         System.out.println("QTable: ");

@@ -1,3 +1,5 @@
+// comments - done
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,16 +9,19 @@ public class QLearner {
     public static void main(String[] args) throws IOException {
         BlackJackEnv game = new BlackJackEnv(BlackJackEnv.RENDER);
     
-		//Init QTable
+		// Init QTable
         double[][] QTable = new double[22][2]; // 2 actions: HIT and STAND and 10 states - having cards of total values 0-21
 
-		//Variables to measure and report average performance
+		// Variables to store average performance
 		double totalReward = 0.0;
         int numberOfGames = 0;
 
+        // Best parameters found during grid search
         double learningRate = 0.9;
         double discountFactor = 0.9;
+
         FileWriter writer = new FileWriter("numbers_simpleQLearner.txt");
+        
         while (notDone()) {
         	// Make sure the playOneGame method returns the end-reward of the game
             totalReward += playOneGame(game, QTable, learningRate, discountFactor);
@@ -41,27 +46,6 @@ public class QLearner {
     }
 
     private static double playOneGame(BlackJackEnv game, double[][] QTable, double learningRate, double discountFactor) { // == update Q 1 time
-        /* 
-        
-        int gamestate = sum of values of all cards in hand; initially 0
-        
-        
-        
-        
-        
-        */
-    	// ...
-    	// Your Code Here
-    	// ...
-    	// You will probably require a loop
-    	// You will need to compute/select/find/fetch s,a,s' and r
-    	// Then update the right values in the QTable
-    	// ...
-    	// Don't forget to return the outcome/reward of the game
-
-
-        // call SOMETHING LIKE random agent to play 1 game
-
         ArrayList<String> gamestate;
         
         double reward = 0;
@@ -70,8 +54,8 @@ public class QLearner {
         for (int i=0; i<1; i++) {
             gamestate = game.reset(); //updates total value for > 12
 
-
             System.out.println("The initial gamestate is: " + gamestate);
+            
             while (gamestate.get(0).equals("false")) { // Game is not over yet
                 System.out.println("The dealer is holding an " + BlackJackEnv.getDealerCards(gamestate));
                 System.out.println("I am holding " + BlackJackEnv.getPlayerCards(gamestate));
@@ -102,15 +86,6 @@ public class QLearner {
                 // Update Q table
                 QTable[current_state][maxNextQValueACTION] = newQValue;
                 
-                // Print Q table to check how it is updated
-                // System.out.println("QTable: ");
-                // for (int k = 0; k < QTable.length; k++) {
-                //     for (int j = 0; j < QTable[k].length; j++) {
-                //         System.out.print(QTable[k][j] + " ");
-                //     }
-                //     System.out.println(); // Move to the next line after printing each row
-                // }
-
                 System.out.println("The gamestate passed back to me was: " + gamestate);
                 System.out.println("I received a reward of " + gamestate.get(1));
             }
@@ -121,49 +96,41 @@ public class QLearner {
             System.out.println();
 
         }
-
         return reward;
     }
 
 
-    // Get maximum Q-value for a given state
+    // Returns the largest value of Q
     private static double getMaxQValue(int state, double[][] QTable) {
         double maxQValue = Double.NEGATIVE_INFINITY;
-
         for (int action = 0; action < 2; action++) { // for 2 actions we have
-
             if (QTable[state][action] > maxQValue) {
                 maxQValue = QTable[state][action];
             }
         }
-
         return maxQValue;
     }
 
+    // Returns the action that corresponds to the biggest achievable Q
     private static double getMaxQValueACTION(int state, double maxQValue, double[][] QTable) {
-
         int action = 0;
-
         for (action = 0; action < 2; action++) { // for 2 actions we have
-
             if (QTable[state][action] == maxQValue) {
                 return action;
             }
         }
-
         return action;
     }
-
-
 
 	// Example stopping condition: fixed number of games
     private static int episodeCounter = 0;
     private static boolean notDone() {
         episodeCounter++;
         System.out.println(episodeCounter);
-        return (episodeCounter <= 100);
+        return (episodeCounter < 50);
     }
 
+    // Prints the QTable
     private static void outputQTable(double [][] QTable) {
         System.out.println("QTable: ");
         for (int k = 0; k < QTable.length; k++) {
