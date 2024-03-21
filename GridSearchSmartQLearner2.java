@@ -1,62 +1,77 @@
 // comments - done 
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class SmartQLearner2 {
+public class GridSearchSmartQLearner2 {
 
     public static void main(String[] args) throws IOException {
         BlackJackEnv game = new BlackJackEnv(BlackJackEnv.RENDER);
-
-        // Init QTable
-        double[][][][] QTable = new double[22][2][2][12]; // 2 actions: HIT and STAND and 10 states - having cards of total values 0-21
 		
         // Variables to store average performance
 		double totalReward = 0.0;
         int numberOfGames = 0;
 
-        // Best parameters found during grid search
-        double learningRate = 0.8;
-        double discountFactor = 0.4;
-
-        FileWriter writer = new FileWriter("numbers_smartQLearner2.txt");
+        // Define parameters for grid search
+        double[] learningRates = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+        double[] discountFactors = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
         
-        while (notDone()) {
-        	// Make sure the playOneGame method returns the end-reward of the game
-            totalReward += playOneGame(game, QTable, learningRate, discountFactor);
-            numberOfGames++;
-            if ((numberOfGames % 5) == 0){
-                System.out.println("Num of games " + numberOfGames);
-                double num = totalReward / numberOfGames;
-                System.out.println("Avg reward after " + numberOfGames + " games = " + 
-                						num);
-                
-                try {
-                    writer.write(Double.toString(num) + "\n");
-                    System.out.println("Numbers written to file successfully.");
-                } catch (IOException e) {
-                    e.printStackTrace();
+        // Variables to track maximum reward and corresponding parameters
+        double maxReward = Double.NEGATIVE_INFINITY;
+        double maxLearningRate = 0.0;
+        double maxDiscountFactor = 0.0;
+
+        int count = 0;
+
+        for (double learningRate : learningRates) {
+            for (double discountFactor : discountFactors) {
+
+                // Init QTable
+                double[][][][] QTable = new double[22][2][2][12]; // 2 actions: HIT and STAND and 10 states - having cards of total values 0-21
+
+                System.out.println("Iteration number " + count);
+
+                // Reset total reward for each parameter combination
+                totalReward = 0.0;
+        
+                while (notDone()) {
+                    // Make sure the playOneGame method returns the end-reward of the game
+                    totalReward += playOneGame(game, QTable, learningRate, discountFactor);
+                    numberOfGames++;
                 }
+
+                double avgReward = totalReward / numberOfGames;
+
+                // Check if this combination achieved max reward
+                if (avgReward > maxReward) {
+                    maxReward = avgReward;
+                    maxLearningRate = learningRate;
+                    maxDiscountFactor = discountFactor;
+                }
+
+                // Reset episode counter and total reward for next parameter combination
+                episodeCounter = 0;
+                numberOfGames = 0;
+                count++;
+
+                // Show the learned QTable
+                outputQTable(QTable);
             }
         }
-        writer.close();
 
-        // Show the learned QTable
-        outputQTable(QTable);
+        System.out.println("Maximum reward " + maxReward);
+        System.out.println("Achieved with learning rate = " + maxLearningRate + " and discount factor = " + maxDiscountFactor);
     }
 
     private static double playOneGame(BlackJackEnv game, double[][][][] QTable, double learningRate, double discountFactor) {
         ArrayList<String> gamestate;
         
-        double reward = 0;
+        double reward = 0.0;
 
-        // Playing 1 random games
+        // Playing 1 random game
         for (int i=0; i<1; i++) {
             gamestate = game.reset(); //updates total value for > 12
 
-
-            System.out.println("The initial gamestate is: " + gamestate);
             while (gamestate.get(0).equals("false")) { // Game is not over yet
                 System.out.println("The dealer is holding an " + BlackJackEnv.getDealerCards(gamestate));
                 System.out.println("I am holding " + BlackJackEnv.getPlayerCards(gamestate));
@@ -92,15 +107,7 @@ public class SmartQLearner2 {
 
                 // Update Q table
                 QTable[current_state][maxNextQValueACTION][hasActiveAce][dealersCard] = newQValue;
-                
-                System.out.println("The gamestate passed back to me was: " + gamestate);
-                System.out.println("I received a reward of " + gamestate.get(1));
             }
-            System.out.println("The game ended with the dealer holding " + BlackJackEnv.getDealerCards(gamestate) +
-                    " for a value of " + BlackJackEnv.totalValue(BlackJackEnv.getDealerCards(gamestate)));
-            System.out.println("and me holding " + BlackJackEnv.getPlayerCards(gamestate) +
-                    " for a value of " + BlackJackEnv.totalValue(BlackJackEnv.getPlayerCards(gamestate)));
-            System.out.println();
         }
         return reward;
     }
@@ -132,7 +139,7 @@ public class SmartQLearner2 {
     private static boolean notDone() {
         episodeCounter++;
         System.out.println(episodeCounter);
-        return (episodeCounter < 200);
+        return (episodeCounter < 10);
     }
 
     // Prints the QTable
@@ -149,3 +156,5 @@ public class SmartQLearner2 {
         }
     }
 }
+
+

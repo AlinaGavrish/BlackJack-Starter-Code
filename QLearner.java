@@ -17,7 +17,7 @@ public class QLearner {
         int numberOfGames = 0;
 
         // Best parameters found during grid search
-        double learningRate = 0.9;
+        double learningRate = 0.2;
         double discountFactor = 0.9;
 
         FileWriter writer = new FileWriter("numbers_simpleQLearner.txt");
@@ -27,10 +27,11 @@ public class QLearner {
             totalReward += playOneGame(game, QTable, learningRate, discountFactor);
             numberOfGames++;
             if ((numberOfGames % 5) == 0){
+                System.out.println("Num of games " + numberOfGames);
+                double num = totalReward / numberOfGames;
                 System.out.println("Avg reward after " + numberOfGames + " games = " + 
-                						(totalReward / ++numberOfGames));
-
-                double num = totalReward / ++numberOfGames;
+                						num);
+                
                 try {
                     writer.write(Double.toString(num) + "\n");
                     System.out.println("Numbers written to file successfully.");
@@ -127,7 +128,7 @@ public class QLearner {
     private static boolean notDone() {
         episodeCounter++;
         System.out.println(episodeCounter);
-        return (episodeCounter < 50);
+        return (episodeCounter < 200);
     }
 
     // Prints the QTable

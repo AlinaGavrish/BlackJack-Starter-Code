@@ -1,3 +1,7 @@
+# comments - done 
+
+## Run this file if you want to plot the result of all three agents for  visualization of comparison
+
 import matplotlib.pyplot as plt
 
 # Read numbers from file: simpleQLearner
@@ -40,13 +44,26 @@ last_simple = numbers_simple[-1]
 last_smart = numbers_smart[-1]
 last_smart2 = numbers_smart2[-1]
 
+max_index_simple = numbers_simple.index(max_simple)
+max_index_smart = numbers_smart.index(max_smart)
+max_index_smart2 = numbers_smart2.index(max_smart2)
+
+
+# Annotate the maximum value and its index on the plot
+# plt.annotate(f'Highest: {max_smart:.2f} (Iteration: {max_index_simple * 5})', xy=(x_values[max_index_simple], max_smart),
+#              xytext=(-20, 10), textcoords='offset points', arrowprops=dict(arrowstyle="->", connectionstyle="arc3"))
+# plt.annotate(f'Highest: {max_smart:.2f} (Iteration: {max_index_smart * 5})', xy=(x_values[max_index_smart], max_smart),
+#              xytext=(-20, 10), textcoords='offset points', arrowprops=dict(arrowstyle="->", connectionstyle="arc3"))
+# plt.annotate(f'Highest: {max_smart:.2f} (Iteration: {max_index_smart2 * 5})', xy=(x_values[max_index_smart2], max_smart),
+#              xytext=(-20, 10), textcoords='offset points', arrowprops=dict(arrowstyle="->", connectionstyle="arc3"))
+
 # Annotate the highest values
 plt.annotate(f'Highest: {max_simple:.2f}', xy=(x_values[numbers_simple.index(max_simple)], max_simple), xytext=(-20, 10),
              textcoords='offset points', arrowprops=dict(arrowstyle="->", connectionstyle="arc3"))
 plt.annotate(f'Highest: {max_smart:.2f}', xy=(x_values[numbers_smart.index(max_smart)], max_smart), xytext=(-20, 10),
              textcoords='offset points', arrowprops=dict(arrowstyle="->", connectionstyle="arc3"))
-# plt.annotate(f'Highest: {max_smart2:.2f}', xy=(x_values[numbers_smart2.index(max_smart2)], max_smart2), xytext=(-20, 10),
-#              textcoords='offset points', arrowprops=dict(arrowstyle="->", connectionstyle="arc3"))
+plt.annotate(f'Highest: {max_smart2:.2f}', xy=(x_values[numbers_smart2.index(max_smart2)], max_smart2), xytext=(-20, 10),
+             textcoords='offset points', arrowprops=dict(arrowstyle="->", connectionstyle="arc3"))
 
 # Annotate the last values
 plt.annotate(f'Last: {last_simple:.2f}', xy=(x_values[-1], last_simple), xytext=(20, -20),
@@ -56,8 +73,8 @@ plt.annotate(f'Last: {last_smart:.2f}', xy=(x_values[-1], last_smart), xytext=(2
 plt.annotate(f'Last: {last_smart2:.2f}', xy=(x_values[-1], last_smart2), xytext=(20, -20),
              textcoords='offset points', arrowprops=dict(arrowstyle="->", connectionstyle="arc3"))
 
-plt.xlabel('Index')
-plt.ylabel('Number')
-plt.title('Plot of Numbers')
+plt.xlabel('Iteration')
+plt.ylabel('Awerage Reward')
+plt.title('Plot of Awerage Rewards')
 plt.legend()  # Show legend
 plt.show()

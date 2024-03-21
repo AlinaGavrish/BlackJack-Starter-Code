@@ -17,8 +17,8 @@ public class SmartQLearner {
         int numberOfGames = 0;
 
         // Best parameters found during grid search
-        double learningRate = 0.2;
-        double discountFactor = 0.8;
+        double learningRate = 0.7;
+        double discountFactor = 0.7;
 
         FileWriter writer = new FileWriter("numbers_smartQLearner.txt");
 
@@ -141,7 +141,6 @@ public class SmartQLearner {
                     System.out.print(QTable[k][j][i] + " ");
                 }
             }
-            System.out.println(); // Move to the next line after printing each row
         }
     }
 }

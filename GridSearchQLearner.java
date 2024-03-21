@@ -3,7 +3,7 @@
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GridSearchSmartQLearner {
+public class GridSearchQLearner {
 
     public static void main(String[] args) throws IOException {
         BlackJackEnv game = new BlackJackEnv(BlackJackEnv.RENDER);
@@ -27,7 +27,7 @@ public class GridSearchSmartQLearner {
             for (double discountFactor : discountFactors) {
 
                 // Init QTable
-                double[][][] QTable = new double[22][2][2]; // 2 actions: HIT and STAND and 10 states - having cards of total values 0-21
+                double[][] QTable = new double[22][2]; // 2 actions: HIT and STAND and 10 states - having cards of total values 0-21
 
                 System.out.println("Iteration number " + count);
 
@@ -63,7 +63,7 @@ public class GridSearchSmartQLearner {
         System.out.println("Achieved with learning rate = " + maxLearningRate + " and discount factor = " + maxDiscountFactor);
     }
 
-    private static double playOneGame(BlackJackEnv game, double[][][] QTable, double learningRate, double discountFactor) {
+    private static double playOneGame(BlackJackEnv game, double[][] QTable, double learningRate, double discountFactor) {
         ArrayList<String> gamestate;
         
         double reward = 0.0;
@@ -76,18 +76,15 @@ public class GridSearchSmartQLearner {
 
                 // Get the value that the agent is holding right now
                 int current_state = BlackJackEnv.totalValue(BlackJackEnv.getPlayerCards(gamestate));
-
-                // Check if the player is holding an active ace
-                int hasActiveAce = BlackJackEnv.holdActiveAce(BlackJackEnv.getPlayerCards(gamestate)) ? 1 : 0;
                 
                 // Old Q value - value in QTable of current state and action = hit
-                double oldQValue = QTable[current_state][0][hasActiveAce]; // Update according to action and active ace
+                double oldQValue = QTable[current_state][0]; // Update according to action and active ace
                 
                 // Find the maximum achievable value when moving from the current state and having the QTable
-                double maxNextQValue = getMaxQValue(current_state, hasActiveAce, QTable); // Update according to active ace
+                double maxNextQValue = getMaxQValue(current_state, QTable); // Update according to active ace
 
                 // Now we know max Q and now we need action that led to this max Q
-                int maxNextQValueACTION = (int) getMaxQValueACTION(current_state, maxNextQValue, hasActiveAce, QTable); // Update according to action and active ace
+                int maxNextQValueACTION = (int) getMaxQValueACTION(current_state, maxNextQValue, QTable); // Update according to action and active ace
                 
                 // Having the action that led to the next max Q, we now update the game state
                 gamestate = game.step(maxNextQValueACTION);
@@ -99,28 +96,28 @@ public class GridSearchSmartQLearner {
                 double newQValue = oldQValue + learningRate * (reward + discountFactor * maxNextQValue - oldQValue);
 
                 // Update Q table
-                QTable[current_state][maxNextQValueACTION][hasActiveAce] = newQValue;
+                QTable[current_state][maxNextQValueACTION] = newQValue;
             }
         }
         return reward;
     }
 
     // Returns the largest value of Q
-    private static double getMaxQValue(int state, int hasActiveAce, double[][][] QTable) {
+    private static double getMaxQValue(int state, double[][] QTable) {
         double maxQValue = Double.NEGATIVE_INFINITY;
         for (int action = 0; action < 2; action++) {
-            if (QTable[state][action][hasActiveAce] > maxQValue) {
-                maxQValue = QTable[state][action][hasActiveAce];
+            if (QTable[state][action] > maxQValue) {
+                maxQValue = QTable[state][action];
             }
         }
         return maxQValue;
     }
 
     // Returns the action that corresponds to the biggest achievable Q
-    private static double getMaxQValueACTION(int state, double maxQValue, int hasActiveAce, double[][][] QTable) {
+    private static double getMaxQValueACTION(int state, double maxQValue, double[][] QTable) {
         int action = 0;
         for (action = 0; action < 2; action++) {
-            if (QTable[state][action][hasActiveAce] == maxQValue) {
+            if (QTable[state][action] == maxQValue) {
                 return action;
             }
         }
@@ -136,16 +133,16 @@ public class GridSearchSmartQLearner {
     }
 
     // Prints the QTable
-    private static void outputQTable(double [][][] QTable) {
+    private static void outputQTable(double [][] QTable) {
         System.out.println("QTable: ");
         for (int k = 0; k < QTable.length; k++) {
             for (int j = 0; j < QTable[k].length; j++) {
-                for(int i = 0; i < QTable[k][j].length; i++){
-                    System.out.print(QTable[k][j][i] + " ");
-                }
+                    System.out.print(QTable[k][j] + " ");
             }
-            System.out.println(); // Move to the next line after printing each row
         }
+            System.out.println(); // Move to the next line after printing each row
     }
 }
+
+
 
