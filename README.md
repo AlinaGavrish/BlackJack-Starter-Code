@@ -1,6 +1,6 @@
 # Intelligent Systems Lab Assignment - Reinforcement Learning
 ## Overview
-This repository contains implementations of Q-learning, a fundamental reinforcement learning algorithm, applied to the casino game Blackjack. The project focuses on developing Q-learning agents capable of making strategic decisions to maximize rewards in the game environment.
+This repository serves as a learning resource for reinforcement learning techniques, specifically Q-learning, applied to a simplified version of the Blackjack game. It encourages exploration of different agent strategies and parameter settings to understand their impact on learning and decision-making.
 
 ## Blackjack Game Rules
 * Objective: The player aims to achieve a total score closer to 21 than the dealer without exceeding it.
